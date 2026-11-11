@@ -237,6 +237,24 @@ test('rejected bodies are always consumed so the connection stays usable', async
   const wrongType = send(stream('{}'), { 'content-type': 'text/plain' });
   assert.equal((await handleApi(wrongType, l.env, l.ctx)).status, 415);
   assert.equal(wrongType.bodyUsed, true);
+  for (const [request, status] of [
+    [send(stream('{}'), { 'content-type': 'application/json', cookie: '' }), 401],
+    [
+      send(stream('{}'), { 'content-type': 'application/json', origin: 'https://evil.example' }),
+      403,
+    ],
+    [
+      new Request('http://localhost/api/assessments', {
+        method: 'PUT',
+        body: stream('{}'),
+        duplex: 'half',
+      }),
+      405,
+    ],
+  ]) {
+    assert.equal((await handleApi(request, l.env, l.ctx)).status, status);
+    assert.equal(request.bodyUsed, true, `body consumed before the ${status}`);
+  }
   const ok = send(stream(JSON.stringify({ engineId: 'unit-25' })), {
     'content-type': 'application/json',
   });
@@ -382,4 +400,41 @@ test('concurrent responder invocations claim a single repair', async t => {
   const s = await repo.read(id);
   assert.equal(s.incident.steps.filter(v => v.phase === 'Repair').length, 1);
   assert.equal(calls, 2);
+});
+test('a failed responder run never escalates an incident another run is repairing', async t => {
+  const l = lab();
+  t.after(() => l.storage.close());
+  // The run's first write (its claim) fails, as under heavy contention.
+  const failingClaim = (repo, beforeFailing) => {
+    let first = true;
+    return Object.assign(Object.create(repo), {
+      async mutate(id, change) {
+        if (!first) return repo.mutate(id, change);
+        first = false;
+        await beforeFailing();
+        throw new Error('workspace_busy_retry');
+      },
+    });
+  };
+  const claimed = await alerted(l);
+  await respond(
+    failingClaim(claimed.repo, () =>
+      claimed.repo.mutate(claimed.id, s => {
+        s.incident.status = 'diagnosing';
+        s.incident.runId = 'winning-run';
+      }),
+    ),
+    claimed.id,
+    async () => ({ status: 503 }),
+  );
+  assert.equal((await claimed.repo.read(claimed.id)).incident.status, 'diagnosing');
+  const unclaimed = await alerted(l);
+  await respond(
+    failingClaim(unclaimed.repo, async () => {}),
+    unclaimed.id,
+    async () => ({ status: 503 }),
+  );
+  const s = await unclaimed.repo.read(unclaimed.id);
+  assert.equal(s.incident.status, 'escalated');
+  assert.equal(s.incident.steps.at(-1).tool, 'agent_error');
 });

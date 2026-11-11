@@ -231,6 +231,7 @@ export default function Home() {
           ].map(v => (
             <button
               className={`nav-item ${view === v.id ? 'active' : ''}`}
+              aria-current={view === v.id ? 'page' : undefined}
               key={v.id}
               onClick={() => setView(v.id)}
             >
@@ -307,15 +308,18 @@ export default function Home() {
               Export evidence
             </a>
           </div>
-          {notice && (
-            <div className="notice" role="status">
-              <Activity size={17} />
-              <span>{notice}</span>
-              <button aria-label="Dismiss message" onClick={() => setNotice('')}>
-                ×
-              </button>
-            </div>
-          )}
+          {/* Always mounted so screen readers announce each new message. */}
+          <div role="status">
+            {notice && (
+              <div className="notice">
+                <Activity size={17} />
+                <span>{notice}</span>
+                <button aria-label="Dismiss message" onClick={() => setNotice('')}>
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
           {loading ? (
             <div className="loading">
               <LoaderCircle className="spin" />
@@ -544,7 +548,9 @@ export default function Home() {
                         <button
                           className="text-button"
                           onClick={restore}
-                          disabled={!!busy || s.serviceAvailable}
+                          // Also offered after an escalation with a healthy configuration, for
+                          // example a failed verification, so the incident can always be closed.
+                          disabled={!!busy || (s.serviceAvailable && !blocked)}
                         >
                           <RotateCcw size={13} />
                           Restore manually

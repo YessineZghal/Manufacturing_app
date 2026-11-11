@@ -102,6 +102,19 @@ test('autonomy is recommended only with enough verified evidence within the obje
   assert.equal(escalated.faultClasses[0].recommendation, 'keep_human_review');
 });
 
+test('manual restores are never evidence for expanding autonomy', () => {
+  const restores = Array.from({ length: EVIDENCE_THRESHOLD }, () =>
+    incident('model_unavailable', 'cancelled', 900),
+  );
+  const onlyRestores = executiveReport(state(restores)).faultClasses[0];
+  assert.equal(onlyRestores.recommendation, 'gather_evidence');
+  assert.match(onlyRestores.rationale, /0 of 3 agent-handled/);
+  const mixed = executiveReport(
+    state([incident('model_unavailable', 'recovered', 1500), ...restores.slice(1)]),
+  ).faultClasses[0];
+  assert.equal(mixed.recommendation, 'gather_evidence');
+});
+
 test('an escalation stays an escalation even after an operator restores the service', () => {
   const escalatedThenRestored = {
     ...incident('unknown_dependency', 'cancelled', 900),

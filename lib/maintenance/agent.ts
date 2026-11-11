@@ -24,8 +24,41 @@ export function diagnose(s: State): 'restore_model' | 'resume_gateway' | 'escala
       ? 'resume_gateway'
       : 'escalate';
 }
+/**
+ * Runs the responder. If it fails unexpectedly, it escalates only an incident this run owns or one
+ * no run has claimed yet, never an incident another run is repairing.
+ */
 export async function respond(repo: Repository, id: string, probe: Probe, advisor?: Advisor) {
   const runId = uuid();
+  try {
+    await run(repo, id, probe, advisor, runId);
+  } catch {
+    await repo
+      .mutate(id, s => {
+        const i = s.incident;
+        if (!i) return;
+        const mine = i.runId === runId && ['diagnosing', 'verifying'].includes(i.status);
+        if (!mine && i.status !== 'alerted') return;
+        i.status = 'escalated';
+        i.completedAt = Date.now();
+        step(
+          i,
+          'Escalate',
+          'agent_error',
+          'failed',
+          'Responder could not complete. Engineer review required.',
+        );
+      })
+      .catch(() => {});
+  }
+}
+async function run(
+  repo: Repository,
+  id: string,
+  probe: Probe,
+  advisor: Advisor | undefined,
+  runId: string,
+) {
   const claim = await repo.mutate(id, s => {
     const i = s.incident;
     if (i?.status !== 'alerted') return null;

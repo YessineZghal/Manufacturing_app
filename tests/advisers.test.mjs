@@ -258,6 +258,21 @@ test('JSON mode is requested, reasoning is ignored, and unsupported JSON mode fa
   );
   assert.equal(await fallback(observation), 'resume_gateway');
   assert.equal(calls, 2);
+  // The fallback shares the first call's deadline instead of starting a new one.
+  const slowFallback = workersAiAdvisor(
+    {
+      run: async (_, input) => {
+        if (!input.response_format) return new Promise(() => {});
+        await new Promise(resolve => setTimeout(resolve, 150));
+        throw new Error('JSON Mode not supported');
+      },
+    },
+    'm',
+    250,
+  );
+  const started = performance.now();
+  await assert.rejects(slowFallback(observation), /adviser_timeout/);
+  assert.ok(performance.now() - started < 350, 'one deadline for both calls');
 });
 
 test('alert → vLLM Qwen2.5-7B agrees with the policy → verified recovery, reasoner recorded', async t => {

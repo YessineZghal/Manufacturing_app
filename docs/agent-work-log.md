@@ -110,7 +110,7 @@ Owner request: improve the RUL model while the Qwen and Cloudflare steps wait on
 
 **Found:** `rul-fd001-v1` was trained on every cycle, including the partial windows of each engine's first 29 cycles, whose slopes are unreliable. The Worker always predicts from a full 30-cycle window, so training and serving disagreed.
 
-**Model selection without the test set:** 5-fold cross-validation over the 100 training engines, grouped by engine, each held-out engine cut every 3 cycles where its true RUL ≤ 150 (4,824 cuts). Full windows only: RMSE 23.88 → 18.98. Rejected on the same validation: cap 115–135, window 20/25, λ 10/100 (all within ±0.6 of the chosen setting), squared window means (−0.7, but a runtime change and harder to explain). The scratch script is not committed.
+**Model selection without the test set:** 5-fold cross-validation over the 100 training engines, grouped by engine, each held-out engine cut every 3 cycles where its true RUL ≤ 150 (4,824 cuts). Full windows only: RMSE 23.88 → 18.98. Rejected on the same validation: cap 115–135, window 20/25, λ 10/100, squared window means (−0.7, but a runtime change and harder to explain). *Correction (independent review, same day): the original note said "all within ±0.6", but window 20 is +1.38; the script is now committed as `scripts/cross-validate.mjs` (`npm run model:cv`).*
 
 **Test set, scored once for the chosen model** (`rul-fd001-v2`): RMSE 22.80 → 16.60, MAE 18.02 → 13.52, PHM08 1,372.2 → 417.4; correct maintenance band 68 → 78 of 100; mean error when true RUL ≤ 30 +21.4 → +4.5. Still weak: 13 of the 25 engines with true RUL ≤ 30 are predicted at 31–48 and shown as *watch*. Thresholds were **not** moved, because choosing them from these numbers would be tuning on the test set. On the fleet, T-63 (true 72) is now predicted 86.8, *healthy* instead of *watch*. The golden engine moves from 33.1 to 47.1 (error 9.1, within the 15-cycle tolerance; the engine was not re-chosen).
 
@@ -129,3 +129,25 @@ Owner request: improve the RUL model while the Qwen and Cloudflare steps wait on
 - **Repository:** at the owner's request the git history was replaced by one first commit under Yessine Zghal <yessine.zghal.1@ulaval.ca>; the owner deleted and recreated `YessineZghal/Manufacturing_app`, and the commit was pushed there. Before pushing: format, lint and `npm test` (52/52, 7/7) passed. The first *Quality gate* run in the new repository passed (verify and container jobs).
 - **Production:** my own attempt to deploy production was blocked by the session's permission policy (production needs the owner's explicit approval), so the owner ran `cloud:prepare production`, the D1 migration and `wrangler deploy`. Checked afterwards: `scripts/check-deployment.mjs` recovered (201/422/persisted, error 9.1); the four pages answer 200; a live `gateway_paused` drill was diagnosed by Workers AI in agreement with the policy; a browser walkthrough had no page errors (the three console errors are the drill's intentional 503s).
 - **PML-07 stays in progress:** Docker and both public deployments are verified, but the GitHub deploy, promotion and rollback workflows have not run, because the new repository has no Cloudflare token or environment variables yet.
+
+## 2026-11-11 — Independent review and fixes (Review role: a fresh agent; fixes: session A)
+
+At the owner's request a separate agent with no memory of the implementation reviewed the repository read-only (correctness, security, ML integrity, docs, UI). It found no security issues and confirmed every published model figure. Each finding below was re-checked against the code before fixing.
+
+| Finding | Fix | Test |
+|---|---|---|
+| Report recommended expanding autonomy from manual restores alone (3 restores → `expand_autonomy`, "0/0") | Evidence counts only agent-handled incidents | `manual restores are never evidence for expanding autonomy` |
+| UI stuck after a failed verification with a healthy configuration (drills blocked, *Restore manually* disabled) | *Restore manually* stays available while an incident is open | Browser: `an escalation after a failed verification can still be closed by an engineer` |
+| A rollback after a model upgrade would leave workspaces on an unknown model ID (503, no alert) | `upgrade()` moves any model ID the serving release does not know to its known-good model; the drill's missing reference is kept | `workspaces move to the serving release model after an upgrade or a rollback` |
+| Replayed idempotency keys reset the alert streak and counted as successes during an outage | Replays are traced but neutral | `replayed idempotency keys during an outage neither count as success nor hide the alert` |
+| A responder run's error handler could escalate another run's incident | Error handling moved into the agent; it escalates only its own or an unclaimed incident | `a failed responder run never escalates an incident another run is repairing` |
+| Bodies rejected with 401, 403 or 405 were not drained | Drained like other rejections | Extended `rejected bodies are always consumed…` |
+| Workers AI fallback could take 30 s instead of 15 s (found while checking the docs finding) | One deadline for both calls | Extended adviser fallback test |
+| Production workflow could be dispatched from any branch | Job runs only for `refs/heads/main` | — |
+| Model-selection script not committed; my ADR said "all within ±0.6" but window 20 is +1.38 | `scripts/cross-validate.mjs` (`npm run model:cv`) reproduces every CV number; ADR and work log corrected | — |
+| Stale docs: "not deployed", test counts, `npm run local` "builds" | Updated | — |
+| Status notice not always in the accessibility tree; nav without active state | Always-mounted `role="status"`; `aria-current` | — |
+
+Not changed: the agent's invalid-engine check still uses the operator endpoint on purpose (it verifies operator validation); this is now documented in operations.md.
+
+**Verified:** `npm test` (model check, typecheck, **55/55**, build, **8/8**), lint and format clean; `capture-demo` from the rebuilt Qwen-backed app: 0 page errors, page heights unchanged.

@@ -167,14 +167,14 @@ Limits enforced in code:
 
 ## Engineering quality
 
-- **51 automated tests plus 7 browser journeys, one command** (`npm test`):
+- **55 automated tests plus 8 browser journeys, one command** (`npm test`):
   - 5 model tests (the Worker runtime reproduces the recorded FD001 evaluation; RMSE quality gate; fleet windows match the raw files; golden engine within tolerance)
-  - 10 domain unit tests
+  - 12 domain unit tests
   - 12 model-adviser tests (including vLLM structured output, fallback, timeout and an end-to-end recovery advised by Qwen2.5-7B)
   - 4 OpenTelemetry tests
-  - 5 executive-report tests
-  - 15 integration tests on a real SQLite database, including *an inaccurate model fails verification even when every probe returns the expected status*
-  - 7 Playwright browser journeys (desktop, mobile, maintenance board, executive report, every navigation link)
+  - 6 executive-report tests
+  - 16 integration tests on a real SQLite database, including *an inaccurate model fails verification even when every probe returns the expected status*
+  - 8 Playwright browser journeys (desktop, mobile, maintenance board, executive report, every navigation link, closing an escalation after a failed verification)
 
   `npm test` also fails if the committed model artifacts are stale (`npm run model:check`). See [docs/testing.md](docs/testing.md).
 - **CI on every pull request:** formatting, lint, tests, then the full system in Docker with an end-to-end deployment check.
@@ -186,7 +186,7 @@ Limits enforced in code:
 - This is a **controlled laboratory** replaying a public simulation benchmark. It does not connect to plant equipment, does not certify airworthiness and does not replace a maintenance engineer.
 - The model is a linear baseline. Published deep-learning models report RMSE of roughly 11–18 on FD001; this one trades accuracy for transparency and zero-dependency inference.
 - Recovery times and the [benchmark](evidence/performance.json) (48 assessments, 12 concurrent sessions, p95 ≈ 28 ms on a laptop) are lab observations, not SLOs.
-- Not yet deployed publicly: the Cloudflare workflows are configured but have not run (see [docs/deployment.md](docs/deployment.md)).
+- Deployed on the Cloudflare free plan ([production](https://predictive-maintenance-lab.yessine-zghal.workers.dev), [development](https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev)) from the owner's laptop. The GitHub deploy, promotion and rollback workflows are configured but have not run yet (see [docs/deployment.md](docs/deployment.md)).
 
 ## Repository layout
 

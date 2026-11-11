@@ -70,13 +70,11 @@ export function workersAiAdvisor(ai: WorkersAI, model: string, timeoutMs = 15000
       max_tokens: 256,
       temperature: 0,
     };
-    const timed = (call: Promise<unknown>) =>
-      Promise.race([
-        call,
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('adviser_timeout')), timeoutMs),
-        ),
-      ]);
+    // One deadline covers both calls, so the fallback cannot double the wait.
+    const deadline = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('adviser_timeout')), timeoutMs),
+    );
+    const timed = (call: Promise<unknown>) => Promise.race([call, deadline]);
     let result: unknown;
     try {
       // JSON mode constrains the answer to the action schema on models that support it.

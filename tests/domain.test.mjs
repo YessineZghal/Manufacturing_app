@@ -79,6 +79,21 @@ test('alert requires three consecutive server failures, not validation failures'
   assert.equal(s.incident.status, 'alerted');
   assert.equal(s.incident.traceId, 'trigger-trace');
 });
+test('replayed idempotency keys during an outage neither count as success nor hide the alert', () => {
+  const s = createState();
+  const kept = assess(s, { engineId: 'unit-25' }, 'kept_before_fault');
+  startDrill(s, 'gateway_paused');
+  for (let n = 0; n < 3; n++) {
+    const fresh = assess(s, { engineId: 'unit-25' }, `fresh_during_fault_${n}`);
+    recordAttempt(s, fresh, false, `failed${n}`, 1);
+    const replay = assess(s, { engineId: 'unit-25' }, 'kept_before_fault');
+    assert.equal(replay.assessment.id, kept.assessment.id);
+    recordAttempt(s, replay, false, `replay${n}`, 1);
+  }
+  assert.equal(s.incident.status, 'alerted');
+  assert.equal(s.metrics.operatorGood, 0);
+  assert.equal(s.metrics.operatorBad, 3);
+});
 test('successful attempts reset the failure streak; telemetry is bounded', () => {
   const s = createState();
   for (let n = 0; n < 140; n++)
@@ -106,11 +121,13 @@ test('probe assessments use the golden engine, are bounded and never consume fle
   assert.equal(assess(s, { engineId: 'unit-25' }, 'probe_wrong', true).status, 422);
   assert.ok(fleet(s).every(e => e.remaining === 12));
 });
-test('workspaces saved under a superseded model release move to the current model', () => {
-  const s = createState();
-  s.config.model = 'rul-fd001-v1';
-  assert.equal(assess(upgrade(s), { engineId: 'unit-25' }, 'after_upgrade').status, 201);
-  assert.equal(s.config.model, KNOWN_GOOD_MODEL);
+test('workspaces move to the serving release model after an upgrade or a rollback', () => {
+  for (const stored of ['rul-fd001-v1', 'rul-fd001-v9']) {
+    const s = createState();
+    s.config.model = stored;
+    assert.equal(assess(upgrade(s), { engineId: 'unit-25' }, 'after_release').status, 201);
+    assert.equal(s.config.model, KNOWN_GOOD_MODEL);
+  }
   const drill = createState();
   startDrill(drill, 'model_unavailable');
   assert.equal(upgrade(drill).config.model, 'rul-model-missing');

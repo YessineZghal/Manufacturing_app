@@ -60,6 +60,28 @@ test('unsupported faults require review and manual restore', async ({ page }) =>
   await page.getByRole('button', { name: 'Restore manually' }).click();
   await expect(page.getByText('cancelled', { exact: true })).toBeVisible();
 });
+test('an escalation after a failed verification can still be closed by an engineer', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Run guided recovery drill' })).toBeEnabled();
+  // Exhaust the probe budget so verification fails after a successful repair.
+  for (let n = 0; n < 80; n++)
+    expect(
+      (
+        await page.request.post('/api/probe', {
+          headers: { 'idempotency-key': `budget_probe_${n}` },
+          data: {},
+        })
+      ).status(),
+    ).toBe(201);
+  await page.getByRole('button', { name: 'Run guided recovery drill' }).click();
+  await expect(page.getByText('escalated', { exact: true })).toBeVisible({ timeout: 45000 });
+  await expect(page.getByText('Available', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Restore manually' }).click();
+  await expect(page.getByText('cancelled', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Run guided recovery drill' })).toBeEnabled();
+});
 test('two browser contexts cannot affect each other', async ({ browser }) => {
   const a = await browser.newContext(),
     b = await browser.newContext();

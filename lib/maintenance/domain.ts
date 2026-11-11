@@ -97,12 +97,16 @@ export interface Result {
 /** The model registry. A configuration may only reference a model that exists here. */
 export const MODELS: Record<string, RulModel> = { [MODEL.id]: MODEL };
 export const KNOWN_GOOD_MODEL = MODEL.id;
-/** Released models replaced by a later release. Stored workspaces move to the replacement on load. */
-export const SUPERSEDED_MODELS: Record<string, string> = { 'rul-fd001-v1': KNOWN_GOOD_MODEL };
-/** Brings a stored workspace up to the current release. A drill's missing model is left alone. */
+/** The deliberately missing model reference that the `model_unavailable` drill injects. */
+export const MISSING_MODEL = 'rul-model-missing';
+/**
+ * Pins a stored workspace to the release that loads it. A model ID this release does not serve
+ * (an older one after an upgrade, a newer one after a rollback) moves to its known-good model;
+ * only the drill's deliberately missing reference stays broken for the agent to repair.
+ */
 export function upgrade(s: State): State {
-  if (Object.hasOwn(SUPERSEDED_MODELS, s.config.model))
-    s.config.model = SUPERSEDED_MODELS[s.config.model];
+  if (!Object.hasOwn(MODELS, s.config.model) && s.config.model !== MISSING_MODEL)
+    s.config.model = KNOWN_GOOD_MODEL;
   return s;
 }
 /** A recovered model must predict the golden engine within this many cycles of its true RUL. */
@@ -209,7 +213,11 @@ export function recordAttempt(
 ) {
   const good = result.status < 300,
     bad = result.status >= 500;
-  if (good) {
+  // A replayed idempotency key returns the stored record without exercising the pipeline, so it
+  // is traced but neither counts as a success nor resets the failure streak.
+  if (result.replay) {
+    /* traced below only */
+  } else if (good) {
     if (probe) s.metrics.probeGood++;
     else s.metrics.operatorGood++;
     s.failureStreak = 0;
@@ -267,7 +275,7 @@ export function startDrill(s: State, kind: unknown, now = Date.now()): Result {
   if (s.history.length >= 12) return { status: 429, code: 'drill_budget_exhausted' };
   if (s.incident) s.history.push(s.incident);
   s.config = {
-    model: kind === 'model_unavailable' ? 'rul-model-missing' : KNOWN_GOOD_MODEL,
+    model: kind === 'model_unavailable' ? MISSING_MODEL : KNOWN_GOOD_MODEL,
     gateway: kind === 'gateway_paused' ? 'paused' : 'streaming',
     unknownFault: kind === 'unknown_dependency',
     revision: s.config.revision + 1,

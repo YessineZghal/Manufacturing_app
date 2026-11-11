@@ -78,7 +78,7 @@ Pure functions over a `State` document:
 - `startDrill` and `manualRestore` change configuration;
 - `fleet` computes remaining cycles and the latest assessment per engine.
 
-The model registry (`MODELS`) maps model IDs to artifacts; the configuration may only reference a registered model. When a release replaces a model, `SUPERSEDED_MODELS` maps the old ID to the new one and `upgrade()` applies it whenever the repository loads a workspace.
+The model registry (`MODELS`) maps model IDs to artifacts; the configuration may only reference a registered model. Whenever the repository loads a workspace, `upgrade()` moves a model ID this release does not serve (after an upgrade or a rollback) to its known-good model; only the drill's deliberately missing reference (`MISSING_MODEL`) is left for the agent to repair.
 
 ### On-call agent — `lib/maintenance/agent.ts`
 Four phases: **observe → diagnose → repair → verify**. Verification reads the persisted golden-engine assessment and requires an absolute error ≤ 15 cycles. See [operations.md](operations.md).

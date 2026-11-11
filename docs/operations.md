@@ -24,6 +24,8 @@ Every call to `/api/assessments` or `/api/probe` produces three signals that sha
 | Structured log | `event: assessment.completed`, `component: rul-service`, `outcome` | `outcome: model_unavailable` |
 | Metric | `rul_assessment_journey_total`, `value: 1`, labels `journey` (`operator_assessment` / `synthetic_probe`) and `outcome` (`success` / `unavailable` / `rejected`) | — |
 
+A retried request with an already-used `Idempotency-Key` returns the stored assessment. It is traced but does not count as a success and does not reset the alert streak, because it never reached the model. The agent's invalid-engine check during verification goes through the operator endpoint on purpose, so it appears as one `operator_assessment` / `rejected` trace; rejections are excluded from the SLI.
+
 How the signals flow:
 - **Collected and stored** per workspace in the database (the last 120), with aggregate counters in `metrics`.
 - **Viewable** in the UI under *Assessment telemetry*, with a detail view showing span, log and metric for one trace ID. The same data is in the evidence export.
@@ -107,7 +109,7 @@ vllm serve Qwen/Qwen2.5-7B-Instruct --max-model-len 4096 --api-key <optional-key
 VLLM_URL=http://<gpu-host>:8000 VLLM_API_KEY=<optional-key> npm run local
 ```
 
-The model receives **only three booleans** (model available, gateway streaming, unknown dependency). It never sees sensor data. Its answer is reduced to exactly one allowlisted action; a different, malformed or late answer (20 s for vLLM, 15 s for Workers AI) escalates. A vLLM server that rejects structured output (HTTP 400) is asked again without it. The *Diagnose* step records the model and its proposal, for example `vLLM Qwen/Qwen2.5-7B-Instruct proposed restore_model; policy selected restore_model`.
+The model receives **only three booleans** (model available, gateway streaming, unknown dependency). It never sees sensor data. Its answer is reduced to exactly one allowlisted action; a different, malformed or late answer escalates. The deadline (20 s for vLLM, 15 s for Workers AI) covers the structured-output request and its fallback together. A vLLM server that rejects structured output (HTTP 400) is asked again without it. The *Diagnose* step records the model and its proposal, for example `vLLM Qwen/Qwen2.5-7B-Instruct proposed restore_model; policy selected restore_model`.
 
 ## Retraining the model
 
@@ -122,7 +124,7 @@ The model receives **only three booleans** (model available, gateway streaming, 
 2. GitHub → **Actions → Roll back a deployment → Run workflow**. Choose the environment and paste the version ID.
 3. The workflow validates the ID, runs `wrangler rollback`, then runs the deployment check against `DEPLOYMENT_URL`.
 
-Because the model ships inside the Worker, a Worker rollback also rolls back the model. Database migrations are additive.
+Because the model ships inside the Worker, a Worker rollback also rolls back the model. Stored workspaces that reference a model the rolled-back release does not serve move to its known-good model when they are next loaded (`upgrade()` in `lib/maintenance/domain.ts`). Database migrations are additive.
 
 ## Capacity and abuse limits (public demo)
 

@@ -90,6 +90,12 @@ async function readBody(request: Request) {
   }
   return new TextDecoder().decode(bytes);
 }
+/** Drains the body of a request rejected before its body is parsed (see readBody). */
+const discard = (request: Request) =>
+  readBody(request).then(
+    () => {},
+    () => {},
+  );
 async function parse(request: Request) {
   const json = request.headers.get('content-type')?.startsWith('application/json');
   const text = await readBody(request);
@@ -109,8 +115,10 @@ export async function handleApi(
     path = url.pathname,
     tid = traceId();
   try {
-    if (request.method !== 'GET' && request.method !== 'POST')
+    if (request.method !== 'GET' && request.method !== 'POST') {
+      await discard(request);
       return reply({ error: 'method_not_allowed' }, 405);
+    }
     if (request.method === 'GET' && path === '/api/health')
       return reply({
         status: 'ok',
@@ -120,9 +128,13 @@ export async function handleApi(
       });
     if (request.method === 'POST') {
       const origin = request.headers.get('origin');
-      if (origin && origin !== url.origin) return reply({ error: 'origin_not_allowed' }, 403);
-      if (request.headers.get('sec-fetch-site') === 'cross-site')
+      if (
+        (origin && origin !== url.origin) ||
+        request.headers.get('sec-fetch-site') === 'cross-site'
+      ) {
+        await discard(request);
         return reply({ error: 'origin_not_allowed' }, 403);
+      }
     }
     if (!env.DB) throw new RepoError(503, 'database_unavailable');
     const repo = new Repository(env.DB);
@@ -139,7 +151,10 @@ export async function handleApi(
         'set-cookie': `pml_session=${raw}; HttpOnly; SameSite=Strict; Path=/; Max-Age=86400${url.protocol === 'https:' ? '; Secure' : ''}`,
       });
     }
-    if (!current) return reply({ error: 'workspace_required' }, 401);
+    if (!current) {
+      await discard(request);
+      return reply({ error: 'workspace_required' }, 401);
+    }
     if (request.method === 'GET' && (path === '/api/workspace' || path === '/api/evidence')) {
       const s = await repo.read(current.id);
       const snapshot = {
@@ -236,26 +251,7 @@ export async function handleApi(
               return { status: verified.status, assessmentId: data.assessment?.id };
             },
             advisor,
-          ).catch(async () => {
-            await repo
-              .mutate(current.id, s => {
-                if (
-                  s.incident &&
-                  ['alerted', 'diagnosing', 'verifying'].includes(s.incident.status)
-                ) {
-                  s.incident.status = 'escalated';
-                  s.incident.completedAt = Date.now();
-                  s.incident.steps.push({
-                    at: Date.now(),
-                    phase: 'Escalate',
-                    tool: 'agent_error',
-                    outcome: 'failed',
-                    detail: 'Responder could not complete. Engineer review required.',
-                  });
-                }
-              })
-              .catch(() => {});
-          }),
+          ).catch(() => {}),
         );
       }
       return reply({ ...result, traceId: tid }, result.status, { 'x-trace-id': tid });

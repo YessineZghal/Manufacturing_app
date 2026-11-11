@@ -12,7 +12,7 @@ This guide maps each capability to concrete files, commands and tests, so each c
 | 6 | **Application** | React UI → Worker API → D1 database. Data persists across reloads and restarts. | `npm ci && npm run local` → ingest → reload |
 | 7 | **Testing** | 5 model + 10 unit + 12 adviser + 4 OpenTelemetry + 5 report + 15 integration + 7 Playwright | `npm test`; see [testing.md](testing.md) |
 | 8 | **Containerization** | [Dockerfile](../Dockerfile) (multi-stage, non-root, health check), [compose.yaml](../compose.yaml) | `docker compose up --build`; CI `container` job |
-| 9 | **Deployment** | Cloudflare Workers + D1 workflows ([deployment.md](deployment.md)). **Not yet deployed.** | — |
+| 9 | **Deployment** | Cloudflare Workers + D1 workflows ([deployment.md](deployment.md)). Live: [production](https://predictive-maintenance-lab.yessine-zghal.workers.dev), [development](https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev); the GitHub deploy workflows have not run yet. | `BASE_URL=<url> node scripts/check-deployment.mjs` |
 | 10 | **CI/CD** | [ci.yml](../.github/workflows/ci.yml), [deploy-development.yml](../.github/workflows/deploy-development.yml), [deploy-production.yml](../.github/workflows/deploy-production.yml) (manual), [rollback.yml](../.github/workflows/rollback.yml) | *Actions* tab after the first push |
 | 11 | **Observability** | One trace ID shared by span, log and metric; OTLP export; Grafana via `compose.observability.yaml` | UI → *Assessment telemetry*; `tests/otel.test.mjs` |
 | 12 | **Alerting on operator impact** | `RulAssessmentUnavailable` ([operations.md](operations.md#alert-rulassessmentunavailable)) | Run a drill; unit test *alert requires three consecutive server failures…* |

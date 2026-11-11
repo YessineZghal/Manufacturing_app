@@ -29,7 +29,7 @@ The model is transparent and runs in microseconds, but it misses part of the cri
 ## Revision 2026-11-11: `rul-fd001-v2`, full windows only
 `rul-fd001-v1` was also trained on the partial windows of each engine's first 29 cycles, where the slopes are unreliable, although the Worker always predicts from a full 30-cycle window. v2 trains on full windows only. Nothing else changed: same features, cap, window, λ and runtime.
 
-The change was chosen by 5-fold cross-validation over the 100 **training** engines (grouped by engine, each held-out engine cut every 3 cycles where its true RUL ≤ 150): RMSE 23.88 → 18.98. Other candidates were rejected on the same validation: cap 115–135, window 20 or 25, λ 10 or 100 (all within ±0.6), and squared window means (−0.7 RMSE, but a runtime change and harder to explain). The test set was scored once, for the chosen model only.
+The change was chosen by 5-fold cross-validation over the 100 **training** engines (grouped by engine, each held-out engine cut every 3 cycles where its true RUL ≤ 150): RMSE 23.88 → 18.98. Other candidates were rejected on the same validation: cap 115–135 (+0.04 to +0.51), window 20 or 25 (+1.38, +0.58), λ 10 or 100 (−0.02, −0.09, within noise), and squared window means (−0.67, but a runtime change and harder to explain). The test set was scored once, for the chosen model only. `npm run model:cv` (`scripts/cross-validate.mjs`, which never reads the test files) reproduces every number in this paragraph.
 
 | FD001 test set (100 engines) | v1 | v2 |
 |---|---|---|
@@ -42,5 +42,5 @@ The change was chosen by 5-fold cross-validation over the 100 **training** engin
 | Mean error when true RUL ≤ 30 | +21.4 | +4.5 |
 | Golden engine (unit 91, true RUL 38) | 33.1 | 47.1 (error 9.1 ≤ 15) |
 
-The quality gate is tightened from RMSE < 25 to RMSE < 20 so the gain cannot regress silently. Workspaces saved under v1 are moved to v2 when they are loaded (`SUPERSEDED_MODELS` and `upgrade()` in `lib/maintenance/domain.ts`); without this they would answer every assessment with `model_unavailable` and, with no incident open, nothing would repair them.
+The quality gate is tightened from RMSE < 25 to RMSE < 20 so the gain cannot regress silently. A stored workspace is pinned to the release that loads it: `upgrade()` in `lib/maintenance/domain.ts` moves any model ID that release does not serve (v1 after this upgrade, or a newer ID after a rollback) to its known-good model, and leaves only the drill's deliberately missing reference broken. Without it such workspaces would answer every assessment with `model_unavailable` and, with no incident open, nothing would repair them.
 

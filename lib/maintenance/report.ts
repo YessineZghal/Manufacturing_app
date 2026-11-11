@@ -88,20 +88,18 @@ function classify(fault: Fault, list: Incident[], objectiveMs: number): FaultCla
   const escalated = list.filter(wasEscalated);
   const restored = list.filter(i => i.status === 'cancelled');
   const within = recovered.filter(i => recoveryMs(i) <= objectiveMs).length;
+  // Only incidents the agent handled are evidence about the agent; manual restores are not.
+  const agentHandled = recovered.length + escalated.length;
   let recommendation: Recommendation;
   let rationale: string;
   if (fault === 'unknown_dependency') {
     recommendation = 'human_owned';
     rationale =
       'No approved repair exists. Keep this class with maintenance engineers; a recurring pattern is a candidate for a new, reviewed runbook.';
-  } else if (list.length < EVIDENCE_THRESHOLD) {
+  } else if (agentHandled < EVIDENCE_THRESHOLD) {
     recommendation = 'gather_evidence';
-    rationale = `${list.length} of ${EVIDENCE_THRESHOLD} incidents needed before the evidence can support a decision.`;
-  } else if (
-    escalated.length === 0 &&
-    recovered.length === list.length - restored.length &&
-    within === recovered.length
-  ) {
+    rationale = `${agentHandled} of ${EVIDENCE_THRESHOLD} agent-handled incidents needed before the evidence can support a decision.`;
+  } else if (escalated.length === 0 && within === recovered.length) {
     recommendation = 'expand_autonomy';
     rationale = `Every agent-handled incident was verified and recovered within the objective (${within}/${recovered.length}).`;
   } else {
@@ -210,7 +208,7 @@ export function executiveReport(
     caveats: [
       'Controlled laboratory replaying the public NASA C-MAPSS FD001 benchmark; figures describe this workspace only.',
       'Autonomy rate = agent recoveries ÷ agent-handled incidents. An escalation counts against autonomy even if an engineer later restores the pipeline; manual restores are never counted as AI success.',
-      `A fault class needs at least ${EVIDENCE_THRESHOLD} incidents before the report recommends expanding autonomy.`,
+      `A fault class needs at least ${EVIDENCE_THRESHOLD} agent-handled incidents (recovered or escalated; manual restores do not count) before the report recommends expanding autonomy.`,
       'Model error is measured against the simulated ground truth. RUL predictions support, and never replace, a maintenance engineer’s decision.',
     ],
   };

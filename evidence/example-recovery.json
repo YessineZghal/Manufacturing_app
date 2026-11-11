@@ -1,11 +1,11 @@
 {
   "format": "predictive-maintenance-evidence/v1",
-  "exportedAt": "2026-11-11T19:14:15.910Z",
+  "exportedAt": "2026-11-11T19:54:07.316Z",
   "dataClassification": "public-benchmark",
   "scope": "one authenticated workspace; controlled lab replay of NASA C-MAPSS FD001, not production plant resilience",
   "schemaVersion": 1,
-  "id": "74ba88d6-1ae7-4a3f-aeef-6e53a3568b8e",
-  "createdAt": 1794424452952,
+  "id": "559727ce-a259-454c-831e-a7a54a8ae24d",
+  "createdAt": 1794426838258,
   "config": {
     "model": "rul-fd001-v2",
     "gateway": "streaming",
@@ -20,10 +20,10 @@
       "cycles": 12,
       "remaining": 11,
       "latest": {
-        "id": "ed70f755-11b2-49c6-aa54-30f691e8433d",
+        "id": "b9a2c7bc-56a1-4557-9d36-e15308b95320",
         "engineId": "unit-25",
-        "key": "4352f2ea-e9c7-4f80-b343-f7f491ad7df0",
-        "createdAt": 1794424453066,
+        "key": "d032fed2-e4a3-4f20-bb4c-d9adfd8ed830",
+        "createdAt": 1794426838385,
         "probe": false,
         "cycle": 37,
         "predictedRul": 125,
@@ -46,10 +46,10 @@
       "cycles": 12,
       "remaining": 11,
       "latest": {
-        "id": "6209317f-dac5-4f54-9a13-f2f31ba7d718",
+        "id": "d4b047bc-d669-485e-927f-06f622a9a94e",
         "engineId": "unit-63",
-        "key": "34adbf88-ce0f-4381-91b0-fc29ede8b9ab",
-        "createdAt": 1794424453248,
+        "key": "3b8334cb-ab89-4c21-8e87-efc13b644c39",
+        "createdAt": 1794426838585,
         "probe": false,
         "cycle": 144,
         "predictedRul": 67.8,
@@ -80,10 +80,10 @@
       "cycles": 12,
       "remaining": 11,
       "latest": {
-        "id": "98d0eeae-fc23-4719-bef0-2be220d80938",
+        "id": "9b64ed06-c858-4534-a759-f74bfbe802a1",
         "engineId": "unit-34",
-        "key": "c0f17359-0150-49a5-9776-6c658fbe4517",
-        "createdAt": 1794424453365,
+        "key": "0678e33a-2abe-446f-91a7-7aefd0983b6d",
+        "createdAt": 1794426838701,
         "probe": false,
         "cycle": 192,
         "predictedRul": 9.4,
@@ -94,10 +94,10 @@
   ],
   "assessments": [
     {
-      "id": "ed70f755-11b2-49c6-aa54-30f691e8433d",
+      "id": "b9a2c7bc-56a1-4557-9d36-e15308b95320",
       "engineId": "unit-25",
-      "key": "4352f2ea-e9c7-4f80-b343-f7f491ad7df0",
-      "createdAt": 1794424453066,
+      "key": "d032fed2-e4a3-4f20-bb4c-d9adfd8ed830",
+      "createdAt": 1794426838385,
       "probe": false,
       "cycle": 37,
       "predictedRul": 125,
@@ -105,10 +105,10 @@
       "health": "healthy"
     },
     {
-      "id": "6209317f-dac5-4f54-9a13-f2f31ba7d718",
+      "id": "d4b047bc-d669-485e-927f-06f622a9a94e",
       "engineId": "unit-63",
-      "key": "34adbf88-ce0f-4381-91b0-fc29ede8b9ab",
-      "createdAt": 1794424453248,
+      "key": "3b8334cb-ab89-4c21-8e87-efc13b644c39",
+      "createdAt": 1794426838585,
       "probe": false,
       "cycle": 144,
       "predictedRul": 67.8,
@@ -116,10 +116,10 @@
       "health": "watch"
     },
     {
-      "id": "98d0eeae-fc23-4719-bef0-2be220d80938",
+      "id": "9b64ed06-c858-4534-a759-f74bfbe802a1",
       "engineId": "unit-34",
-      "key": "c0f17359-0150-49a5-9776-6c658fbe4517",
-      "createdAt": 1794424453365,
+      "key": "0678e33a-2abe-446f-91a7-7aefd0983b6d",
+      "createdAt": 1794426838701,
       "probe": false,
       "cycle": 192,
       "predictedRul": 9.4,
@@ -127,10 +127,10 @@
       "health": "critical"
     },
     {
-      "id": "1d6b0bb7-5cc8-4604-92c8-a3f066a1178f",
+      "id": "a4ba7fa9-b4ca-4f4e-b99d-7198bab8d2e9",
       "engineId": "reference",
-      "key": "agent_e00e4956-c501-4d44-90c2-4b87860dd460",
-      "createdAt": 1794424455360,
+      "key": "agent_e3b13586-fc22-4be6-b9c5-9172167ada66",
+      "createdAt": 1794426846589,
       "probe": true,
       "cycle": 234,
       "predictedRul": 47.1,
@@ -139,58 +139,58 @@
     }
   ],
   "incident": {
-    "id": "c4a82e94-562a-436b-870b-3d81f8274459",
+    "id": "89c2ba6a-4c7f-4b56-bda0-3cc01de6bf93",
     "kind": "model_unavailable",
     "status": "recovered",
-    "openedAt": 1794424453516,
+    "openedAt": 1794426838870,
     "configRevision": 1,
     "steps": [
       {
-        "at": 1794424453516,
+        "at": 1794426838870,
         "phase": "Fault",
         "tool": "inject_workspace_fault",
         "outcome": "applied",
         "detail": "A controlled fault affects this workspace only. Existing assessments are unchanged."
       },
       {
-        "at": 1794424454303,
+        "at": 1794426839665,
         "phase": "Alert",
         "tool": "evaluate_operator_impact",
         "outcome": "triggered",
         "detail": "Three consecutive unavailable RUL assessments. Validation errors are excluded."
       },
       {
-        "at": 1794424454304,
+        "at": 1794426839667,
         "phase": "Observe",
         "tool": "read_pipeline_state",
         "outcome": "complete",
         "detail": "Read pipeline configuration and the three-attempt operator-impact alert. No sensor data is sent to reasoning."
       },
       {
-        "at": 1794424455359,
+        "at": 1794426846586,
         "phase": "Diagnose",
         "tool": "select_allowlisted_repair",
         "outcome": "restore_model",
         "detail": "Reasoner: model-advised (vLLM mlx-community/Qwen2.5-7B-Instruct-4bit proposed restore_model; policy selected restore_model). The repair must agree with observed state and cannot change assessments or model weights."
       },
       {
-        "at": 1794424455359,
+        "at": 1794426846586,
         "phase": "Repair",
         "tool": "restore_model",
         "outcome": "applied",
         "detail": "Pointed the model registry back to the validated rul-fd001-v2 using a revision-checked update."
       },
       {
-        "at": 1794424455365,
+        "at": 1794426846595,
         "phase": "Verify",
         "tool": "exercise_assessment_api",
         "outcome": "passed",
         "detail": "Golden-engine probe HTTP 201; invalid-engine probe HTTP 422; durable probe assessment confirmed; prediction error 9.1 cycles (tolerance 15)."
       }
     ],
-    "alertedAt": 1794424454303,
-    "traceId": "d5e83060aa6c4f66b39985a73047f747",
-    "runId": "8fafb3c3-7159-4de5-8adf-99078fd8402d",
+    "alertedAt": 1794426839665,
+    "traceId": "2da5e509b35d47179cd3b60a2f052640",
+    "runId": "b3797ff6-a55d-4c93-889f-9574d4ae3f08",
     "verification": {
       "positive": 201,
       "negative": 422,
@@ -198,14 +198,14 @@
       "absoluteError": 9.1,
       "accurate": true
     },
-    "completedAt": 1794424455365
+    "completedAt": 1794426846595
   },
   "history": [],
   "traces": [
     {
-      "traceId": "38ecf6503e6c494c8d16154acc7c75a8",
-      "spanId": "a66a1381ee0247b6",
-      "at": 1794424453067,
+      "traceId": "49e37707127649289cd2370ae90488da",
+      "spanId": "3e2052886fdd487b",
+      "at": 1794426838386,
       "durationMs": 2,
       "span": "rul.assessment",
       "status": 201,
@@ -222,104 +222,9 @@
       }
     },
     {
-      "traceId": "354a2fefa98e4ce9b61565c7af88881b",
-      "spanId": "f1979962a23f429f",
-      "at": 1794424453249,
-      "durationMs": 1,
-      "span": "rul.assessment",
-      "status": 201,
-      "log": {
-        "event": "assessment.completed",
-        "component": "rul-service",
-        "outcome": "assessment_recorded"
-      },
-      "metric": {
-        "name": "rul_assessment_journey_total",
-        "value": 1,
-        "journey": "operator_assessment",
-        "outcome": "success"
-      }
-    },
-    {
-      "traceId": "b076f33ed5ab4074a8f29f98dc6c1b97",
-      "spanId": "63a83cd2fc66435c",
-      "at": 1794424453365,
-      "durationMs": 1,
-      "span": "rul.assessment",
-      "status": 201,
-      "log": {
-        "event": "assessment.completed",
-        "component": "rul-service",
-        "outcome": "assessment_recorded"
-      },
-      "metric": {
-        "name": "rul_assessment_journey_total",
-        "value": 1,
-        "journey": "operator_assessment",
-        "outcome": "success"
-      }
-    },
-    {
-      "traceId": "db2f48a3bc524aa698c45515a03d2c67",
-      "spanId": "917e308795654b86",
-      "at": 1794424453786,
-      "durationMs": 1,
-      "span": "rul.assessment",
-      "status": 503,
-      "log": {
-        "event": "assessment.completed",
-        "component": "rul-service",
-        "outcome": "model_unavailable"
-      },
-      "metric": {
-        "name": "rul_assessment_journey_total",
-        "value": 1,
-        "journey": "synthetic_probe",
-        "outcome": "unavailable"
-      }
-    },
-    {
-      "traceId": "7af53a6846974f7899e5a6e17cfbde9f",
-      "spanId": "e0a9143006554af9",
-      "at": 1794424454045,
-      "durationMs": 1,
-      "span": "rul.assessment",
-      "status": 503,
-      "log": {
-        "event": "assessment.completed",
-        "component": "rul-service",
-        "outcome": "model_unavailable"
-      },
-      "metric": {
-        "name": "rul_assessment_journey_total",
-        "value": 1,
-        "journey": "synthetic_probe",
-        "outcome": "unavailable"
-      }
-    },
-    {
-      "traceId": "d5e83060aa6c4f66b39985a73047f747",
-      "spanId": "7bcfa98fa0204b5b",
-      "at": 1794424454303,
-      "durationMs": 1,
-      "span": "rul.assessment",
-      "status": 503,
-      "log": {
-        "event": "assessment.completed",
-        "component": "rul-service",
-        "outcome": "model_unavailable"
-      },
-      "metric": {
-        "name": "rul_assessment_journey_total",
-        "value": 1,
-        "journey": "synthetic_probe",
-        "outcome": "unavailable"
-      }
-    },
-    {
-      "traceId": "af10e69c1fdd433887112689f0f92530",
-      "spanId": "ee3c2eac4acd4e7d",
-      "at": 1794424455362,
+      "traceId": "9ee97c06569640559953eb87a76f301b",
+      "spanId": "efe70d1d95ca4ae2",
+      "at": 1794426838586,
       "durationMs": 2,
       "span": "rul.assessment",
       "status": 201,
@@ -331,15 +236,110 @@
       "metric": {
         "name": "rul_assessment_journey_total",
         "value": 1,
+        "journey": "operator_assessment",
+        "outcome": "success"
+      }
+    },
+    {
+      "traceId": "0d46ba536da744e999dbec59b7d52659",
+      "spanId": "8f74e32e70d14256",
+      "at": 1794426838703,
+      "durationMs": 3,
+      "span": "rul.assessment",
+      "status": 201,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "assessment_recorded"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "operator_assessment",
+        "outcome": "success"
+      }
+    },
+    {
+      "traceId": "37f67be413144dff90dce2e875830372",
+      "spanId": "5c33fdecccca4dec",
+      "at": 1794426839140,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 503,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "model_unavailable"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "unavailable"
+      }
+    },
+    {
+      "traceId": "acdbc51522514344b5ef341a7463b003",
+      "spanId": "fe8de31ea6e849b9",
+      "at": 1794426839403,
+      "durationMs": 2,
+      "span": "rul.assessment",
+      "status": 503,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "model_unavailable"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "unavailable"
+      }
+    },
+    {
+      "traceId": "2da5e509b35d47179cd3b60a2f052640",
+      "spanId": "5ad7abfae43b49c6",
+      "at": 1794426839665,
+      "durationMs": 2,
+      "span": "rul.assessment",
+      "status": 503,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "model_unavailable"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "unavailable"
+      }
+    },
+    {
+      "traceId": "150e30b75c9a48ad87bf68853fcadf4f",
+      "spanId": "718ee9822e954da6",
+      "at": 1794426846589,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 201,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "assessment_recorded"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
         "journey": "synthetic_probe",
         "outcome": "success"
       }
     },
     {
-      "traceId": "c75d6d6d4c7c4673858b4b8302f773cf",
-      "spanId": "35d9e5b075e24b5b",
-      "at": 1794424455364,
-      "durationMs": 1,
+      "traceId": "16e83ba69bc943e3a4435f886cb1de13",
+      "spanId": "23ca100358f54201",
+      "at": 1794426846593,
+      "durationMs": 2,
       "span": "rul.assessment",
       "status": 422,
       "log": {

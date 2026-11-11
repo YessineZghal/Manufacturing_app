@@ -21,6 +21,7 @@
     "db:generate": "drizzle-kit generate",
     "model:train": "node scripts/train-model.mjs",
     "model:check": "node scripts/train-model.mjs --check",
+    "model:cv": "node scripts/cross-validate.mjs",
     "local": "node scripts/local.mjs",
     "local:qwen": "node scripts/local-qwen.mjs",
     "vllm:mac": "vllm serve mlx-community/Qwen2.5-7B-Instruct-4bit --max-model-len 4096 --host 127.0.0.1 --port 8000",

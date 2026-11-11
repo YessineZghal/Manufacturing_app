@@ -35,7 +35,8 @@ The architecture is adapted from Service Recovery Lab; keep the two aligned wher
 ```bash
 npm ci                 # install
 npm run model:train    # retrain on dataset/CMAPSS and regenerate lib/maintenance/*.generated.ts
-npm run local          # build, migrate, serve http://127.0.0.1:3000
+npm run local          # migrate and serve the last build on :3000 (builds only if none exists)
+npm run build          # rebuild after a code or model change, before npm run local
 npm test               # model check → typecheck → unit + integration → build → browser
 npm run lint
 docker compose up --build
