@@ -151,3 +151,5 @@ At the owner's request a separate agent with no memory of the implementation rev
 Not changed: the agent's invalid-engine check still uses the operator endpoint on purpose (it verifies operator validation); this is now documented in operations.md.
 
 **Verified:** `npm test` (model check, typecheck, **55/55**, build, **8/8**), lint and format clean; `capture-demo` from the rebuilt Qwen-backed app: 0 page errors, page heights unchanged.
+
+**Redeployed with the fixes (`1417014`):** development by Wrangler from the laptop, production by the owner. Both: `scripts/check-deployment.mjs` recovered (error 9.1); `PUT` → 405; browser walkthrough (ingest, guided drill, sidebar pages) with no page errors, the only console errors being the drill's three intentional 503s. The first production walkthrough, run seconds after the deploy, timed out waiting for the page; repeated a minute later it passed on both environments, consistent with the new version still propagating. CI *Quality gate* passed on `1417014`.
