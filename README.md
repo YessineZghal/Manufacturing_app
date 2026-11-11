@@ -8,7 +8,7 @@
 
 **Checks that the RUL prediction works, not only that the server is up.**
 
-**Live demo (development):** <https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev>. Each visitor gets an isolated 24-hour workspace.
+**Live demo:** <https://predictive-maintenance-lab.yessine-zghal.workers.dev> (production) · [development](https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev). Each visitor gets an isolated 24-hour workspace.
 
 A common failure in predictive maintenance: **the dashboards are green, but planners get no remaining-useful-life prediction**, or a wrong one.
 

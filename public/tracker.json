@@ -98,7 +98,8 @@
         "Dockerfile, compose.yaml: verified locally on 2026-11-10 (healthy, deployment check passed, restart kept data)",
         ".github/workflows/",
         "GitHub Actions Quality gate passed (verify + container jobs, before the history squash): https://github.com/YessineZghal/Manufacturing_app/actions/runs/42895135910",
-        "Development deployed on 2026-11-11 from the owner's laptop (wrangler, free plan): https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev; scripts/check-deployment.mjs recovered, golden-engine error 9.1; a live drill was diagnosed by Workers AI (Llama 3.3 70B) in agreement with the policy. GitHub-driven deploy, production promotion and rollback not yet run (repository secrets not configured)."
+        "Development deployed on 2026-11-11 from the owner's laptop (wrangler, free plan): https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev; scripts/check-deployment.mjs recovered, golden-engine error 9.1; a live drill was diagnosed by Workers AI (Llama 3.3 70B) in agreement with the policy. GitHub-driven deploy, production promotion and rollback not yet run (repository secrets not configured).",
+        "Production promoted on 2026-11-11 by the owner (wrangler deploy from the laptop): https://predictive-maintenance-lab.yessine-zghal.workers.dev; deployment check recovered (error 9.1); Workers AI diagnosis agreed with the policy; browser walkthrough without page errors. Still open: running the deploy, promotion and rollback through the GitHub workflows (needs a Cloudflare API token and environment variables in the new repository)."
       ]
     }
   ]
