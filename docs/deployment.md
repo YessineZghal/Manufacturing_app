@@ -57,6 +57,14 @@ The worker name in `CLOUDFLARE_WORKER_NAME` must be lowercase letters, digits an
 
 ## 3. First deployment
 
+> **Deploying from a laptop instead** (this is how the first development and production deployments were made): `npx wrangler login`, then for each environment
+> ```bash
+> CLOUDFLARE_D1_DATABASE_ID=<uuid> CLOUDFLARE_WORKER_NAME=<worker-name> GITHUB_SHA=$(git rev-parse HEAD) npm run cloud:prepare -- <development|production>
+> npx wrangler d1 migrations apply DB --remote --config dist/server/wrangler.<stage>.json
+> npx wrangler deploy --config dist/server/wrangler.<stage>.json
+> ```
+> Run `npm run build` first. The GitHub workflows below do the same steps with tests and approvals around them.
+
 1. Push to `main`. *Quality gate* runs. When it passes, *Deploy development* starts automatically: build → `cloud:prepare` → D1 migrations → `wrangler deploy` → deployment check against `DEPLOYMENT_URL`.
 2. Open the development URL and run the five-minute experiment from the README.
 3. Promote: *Actions → Promote production manually → Run workflow* → approve. It runs the full test suite, migrates the production database, deploys and runs the deployment check.
@@ -81,4 +89,5 @@ Links worth keeping for reviewers:
 | `Set CLOUDFLARE_D1_DATABASE_ID for this environment.` | The variable is missing or is not a UUID in that GitHub environment |
 | `Authentication error [code: 10000]` | The token lacks *Workers Scripts: Edit* or *D1: Edit* |
 | Deployment check `Process health failed` | `DEPLOYMENT_URL` is wrong, or it is the first deploy and the `workers.dev` route is still propagating. Re-run the job after a minute. |
+| `You need to register a workers.dev subdomain before publishing to workers.dev` | A new account has no `workers.dev` subdomain, and Wrangler can only create one interactively. Open *Workers & Pages* in the dashboard once (or the onboarding link in the error) and choose a subdomain, then re-run the deploy. |
 | Deploy development did not start | It only runs after *Quality gate* succeeds on a **push** to `main` (not on pull requests), and only when the repository variable `DEPLOY_ENABLED` is `true` |
