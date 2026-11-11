@@ -1,0 +1,71 @@
+{
+  "name": "predictive-maintenance-lab",
+  "version": "1.0.0",
+  "description": "Predictive-maintenance recovery lab on NASA C-MAPSS FD001: RUL assessments, operator-impact alerting, a bounded on-call agent and verified recovery evidence.",
+  "author": "Yessine Zghal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YessineZghal/Manufacturing_app.git"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vinext dev",
+    "build": "vinext build",
+    "start": "node scripts/local.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "db:generate": "drizzle-kit generate",
+    "model:train": "node scripts/train-model.mjs",
+    "model:check": "node scripts/train-model.mjs --check",
+    "local": "node scripts/local.mjs",
+    "local:qwen": "node scripts/local-qwen.mjs",
+    "vllm:mac": "vllm serve mlx-community/Qwen2.5-7B-Instruct-4bit --max-model-len 4096 --host 127.0.0.1 --port 8000",
+    "adviser:check": "node scripts/check-adviser.mjs",
+    "test": "node scripts/test.mjs",
+    "test:core": "node --test tests/model.test.mjs tests/domain.test.mjs tests/advisers.test.mjs tests/otel.test.mjs tests/report.test.mjs tests/integration.test.mjs",
+    "test:browser": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "cloud:prepare": "node scripts/cloud-prepare.mjs",
+    "check:deployment": "node scripts/check-deployment.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.2",
+    "lucide-react": "^1.31.0",
+    "next": "16.3.4",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@cloudflare/workers-types": "4.20260515.1",
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "drizzle-kit": "0.31.10",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.3.4",
+    "prettier": "^3.6.2",
+    "react-server-dom-webpack": "19.2.6",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "1.0.0-beta.5",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "overrides": {
+    "miniflare": {
+      "sharp": "0.35.4"
+    }
+  }
+}

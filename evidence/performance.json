@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-11-10T17:59:50.934Z",
+  "scope": "Small synthetic HTTP benchmark of the local production Worker build; not a production capacity test",
+  "node": "v26.5.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "requests": 48,
+  "concurrency": 12,
+  "successes": 48,
+  "p50Ms": 21.24,
+  "p95Ms": 27.72,
+  "maxMs": 27.73,
+  "wallTimeMs": 96,
+  "observedRequestsPerSecond": 501.95,
+  "limitations": [
+    "Local machine and local D1 emulator",
+    "No internet latency, multi-region traffic or sustained load",
+    "Sessions were pre-created; each assessment runs RUL inference and persists state and telemetry",
+    "Results do not establish an SLA or production throughput"
+  ]
+}

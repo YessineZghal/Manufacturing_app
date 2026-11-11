@@ -1,0 +1,17 @@
+# Copy to .env only if using Docker Compose. Do not commit .env.
+PML_PORT=3000
+# Optional model adviser: a vLLM server with Qwen2.5-7B-Instruct (OpenAI-compatible API).
+# Leave VLLM_URL blank for the bounded-policy responder.
+VLLM_URL=
+VLLM_MODEL=Qwen/Qwen2.5-7B-Instruct
+# Only if the server was started with --api-key.
+VLLM_API_KEY=
+# compose.vllm.yaml starts vLLM next to the app (NVIDIA GPU required) and sets VLLM_URL to
+# http://vllm:8000. A vLLM server on your host is reachable from Docker as
+# VLLM_URL=http://host.docker.internal:8000
+
+# Optional OpenTelemetry export (OTLP/HTTP). Leave blank to keep telemetry in the app only.
+# compose.observability.yaml sets this to its bundled Grafana stack automatically.
+OTEL_EXPORTER_OTLP_ENDPOINT=
+# Comma-separated key=value pairs, for example a vendor API key (values may be URL-encoded).
+OTEL_EXPORTER_OTLP_HEADERS=

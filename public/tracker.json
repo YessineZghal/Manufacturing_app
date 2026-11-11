@@ -1,0 +1,105 @@
+{
+  "project": "Predictive Maintenance Lab",
+  "updated": "2026-11-10",
+  "tasks": [
+    {
+      "id": "PML-01",
+      "title": "Specify the product, dataset and evidence contract",
+      "status": "done",
+      "acceptance": [
+        "Problem, user and limits documented before domain code",
+        "NASA C-MAPSS FD001 provenance and checksums recorded",
+        "Observable acceptance scenarios recorded"
+      ],
+      "agent": "Product agent",
+      "evidence": [
+        "docs/product-spec.md",
+        "dataset/README.md",
+        "docs/agent-work-log.md (PML-01 entry)"
+      ]
+    },
+    {
+      "id": "PML-02",
+      "title": "Reproducible RUL model with a quality gate",
+      "status": "done",
+      "acceptance": [
+        "Deterministic training script on train_FD001",
+        "Evaluation on the 100 held-out test engines against RUL_FD001",
+        "Committed artifacts verified fresh in the test command",
+        "RMSE of 20 cycles or more fails the build"
+      ],
+      "agent": "Implementation agent",
+      "evidence": ["scripts/train-model.mjs", "tests/model.test.mjs", "npm run model:check"]
+    },
+    {
+      "id": "PML-03",
+      "title": "Persistent and isolated assessment service",
+      "status": "done",
+      "acceptance": [
+        "Authenticated workspace isolation",
+        "Atomic cycle ingestion and idempotent assessments",
+        "Persistence after restart"
+      ],
+      "agent": "Implementation agent",
+      "evidence": [
+        "Integration tests: session isolation, concurrent assessments, persistence after reopen",
+        "lib/maintenance/repository.ts (revision compare-and-swap)"
+      ]
+    },
+    {
+      "id": "PML-04",
+      "title": "Bounded alert-triggered recovery with accuracy verification",
+      "status": "done",
+      "acceptance": [
+        "Assessment failures trigger an alert",
+        "Agent repairs two allowlisted faults",
+        "Unsupported faults escalate",
+        "Live positive, negative and accuracy verification"
+      ],
+      "agent": "Implementation agent",
+      "evidence": [
+        "Integration tests: alert invokes responder (both faults), unknown failure escalates, inaccurate model fails verification, stale and concurrent agent runs"
+      ]
+    },
+    {
+      "id": "PML-05",
+      "title": "Accessible maintenance interface and evidence",
+      "status": "done",
+      "acceptance": [
+        "Workspace, maintenance board, telemetry and evidence views",
+        "Executive report with model quality",
+        "Keyboard operable and responsive to 390 px"
+      ],
+      "agent": "Implementation agent",
+      "evidence": ["app/", "tests/browser/journeys.spec.ts"]
+    },
+    {
+      "id": "PML-06",
+      "title": "Unit, integration and frontend validation",
+      "status": "done",
+      "acceptance": [
+        "One command runs model check, typecheck, unit, integration, build and browser tests",
+        "All suites pass locally"
+      ],
+      "agent": "Verification agent",
+      "evidence": ["npm test", "docs/testing.md", "docs/agent-work-log.md"]
+    },
+    {
+      "id": "PML-07",
+      "title": "Containers, delivery pipeline and public deployment",
+      "status": "in_progress",
+      "acceptance": [
+        "Docker Compose starts the app with a persistent volume",
+        "CI, development deploy, manual production promotion and rollback workflows",
+        "Public deployment checked end to end"
+      ],
+      "agent": "Delivery agent",
+      "evidence": [
+        "Dockerfile, compose.yaml: verified locally on 2026-11-10 (healthy, deployment check passed, restart kept data)",
+        ".github/workflows/",
+        "GitHub Actions Quality gate passed (verify + container jobs, before the history squash): https://github.com/YessineZghal/Manufacturing_app/actions/runs/42895135910",
+        "Development deployed on 2026-11-11 from the owner's laptop (wrangler, free plan): https://predictive-maintenance-lab-dev.yessine-zghal.workers.dev; scripts/check-deployment.mjs recovered, golden-engine error 9.1; a live drill was diagnosed by Workers AI (Llama 3.3 70B) in agreement with the policy. GitHub-driven deploy, production promotion and rollback not yet run (repository secrets not configured)."
+      ]
+    }
+  ]
+}

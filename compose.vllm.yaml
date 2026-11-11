@@ -1,0 +1,42 @@
+# Optional model adviser: vLLM serving Qwen2.5-7B-Instruct next to the app.
+#   docker compose -f compose.yaml -f compose.vllm.yaml up --build
+# Requires an NVIDIA GPU with the NVIDIA Container Toolkit (about 16 GB of GPU memory in bf16).
+# The first start downloads the model weights from Hugging Face into the vllm-cache volume.
+services:
+  app:
+    environment:
+      VLLM_URL: http://vllm:8000
+      VLLM_MODEL: Qwen/Qwen2.5-7B-Instruct
+      VLLM_API_KEY: '${VLLM_API_KEY:-}'
+    depends_on:
+      vllm:
+        condition: service_healthy
+  vllm:
+    image: vllm/vllm-openai:v0.32.0
+    command:
+      - --model
+      - Qwen/Qwen2.5-7B-Instruct
+      - --max-model-len
+      - '4096'
+    environment:
+      HF_TOKEN: '${HF_TOKEN:-}'
+      VLLM_API_KEY: '${VLLM_API_KEY:-}'
+    volumes:
+      - vllm-cache:/root/.cache/huggingface
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ['CMD', 'curl', '-sf', 'http://127.0.0.1:8000/health']
+      interval: 15s
+      timeout: 5s
+      start_period: 600s
+      retries: 10
+    restart: unless-stopped
+volumes:
+  vllm-cache:

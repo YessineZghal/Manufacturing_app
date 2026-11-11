@@ -1,0 +1,408 @@
+{
+  "format": "predictive-maintenance-evidence/v1",
+  "exportedAt": "2026-11-11T19:14:15.910Z",
+  "dataClassification": "public-benchmark",
+  "scope": "one authenticated workspace; controlled lab replay of NASA C-MAPSS FD001, not production plant resilience",
+  "schemaVersion": 1,
+  "id": "74ba88d6-1ae7-4a3f-aeef-6e53a3568b8e",
+  "createdAt": 1794424452952,
+  "config": {
+    "model": "rul-fd001-v2",
+    "gateway": "streaming",
+    "unknownFault": false,
+    "revision": 2
+  },
+  "engines": [
+    {
+      "id": "unit-25",
+      "label": "Engine T-25",
+      "unit": 25,
+      "cycles": 12,
+      "remaining": 11,
+      "latest": {
+        "id": "ed70f755-11b2-49c6-aa54-30f691e8433d",
+        "engineId": "unit-25",
+        "key": "4352f2ea-e9c7-4f80-b343-f7f491ad7df0",
+        "createdAt": 1794424453066,
+        "probe": false,
+        "cycle": 37,
+        "predictedRul": 125,
+        "actualRul": 156,
+        "health": "healthy"
+      }
+    },
+    {
+      "id": "unit-71",
+      "label": "Engine T-71",
+      "unit": 71,
+      "cycles": 12,
+      "remaining": 12,
+      "latest": null
+    },
+    {
+      "id": "unit-63",
+      "label": "Engine T-63",
+      "unit": 63,
+      "cycles": 12,
+      "remaining": 11,
+      "latest": {
+        "id": "6209317f-dac5-4f54-9a13-f2f31ba7d718",
+        "engineId": "unit-63",
+        "key": "34adbf88-ce0f-4381-91b0-fc29ede8b9ab",
+        "createdAt": 1794424453248,
+        "probe": false,
+        "cycle": 144,
+        "predictedRul": 67.8,
+        "actualRul": 83,
+        "health": "watch"
+      }
+    },
+    {
+      "id": "unit-17",
+      "label": "Engine T-17",
+      "unit": 17,
+      "cycles": 12,
+      "remaining": 12,
+      "latest": null
+    },
+    {
+      "id": "unit-20",
+      "label": "Engine T-20",
+      "unit": 20,
+      "cycles": 12,
+      "remaining": 12,
+      "latest": null
+    },
+    {
+      "id": "unit-34",
+      "label": "Engine T-34",
+      "unit": 34,
+      "cycles": 12,
+      "remaining": 11,
+      "latest": {
+        "id": "98d0eeae-fc23-4719-bef0-2be220d80938",
+        "engineId": "unit-34",
+        "key": "c0f17359-0150-49a5-9776-6c658fbe4517",
+        "createdAt": 1794424453365,
+        "probe": false,
+        "cycle": 192,
+        "predictedRul": 9.4,
+        "actualRul": 18,
+        "health": "critical"
+      }
+    }
+  ],
+  "assessments": [
+    {
+      "id": "ed70f755-11b2-49c6-aa54-30f691e8433d",
+      "engineId": "unit-25",
+      "key": "4352f2ea-e9c7-4f80-b343-f7f491ad7df0",
+      "createdAt": 1794424453066,
+      "probe": false,
+      "cycle": 37,
+      "predictedRul": 125,
+      "actualRul": 156,
+      "health": "healthy"
+    },
+    {
+      "id": "6209317f-dac5-4f54-9a13-f2f31ba7d718",
+      "engineId": "unit-63",
+      "key": "34adbf88-ce0f-4381-91b0-fc29ede8b9ab",
+      "createdAt": 1794424453248,
+      "probe": false,
+      "cycle": 144,
+      "predictedRul": 67.8,
+      "actualRul": 83,
+      "health": "watch"
+    },
+    {
+      "id": "98d0eeae-fc23-4719-bef0-2be220d80938",
+      "engineId": "unit-34",
+      "key": "c0f17359-0150-49a5-9776-6c658fbe4517",
+      "createdAt": 1794424453365,
+      "probe": false,
+      "cycle": 192,
+      "predictedRul": 9.4,
+      "actualRul": 18,
+      "health": "critical"
+    },
+    {
+      "id": "1d6b0bb7-5cc8-4604-92c8-a3f066a1178f",
+      "engineId": "reference",
+      "key": "agent_e00e4956-c501-4d44-90c2-4b87860dd460",
+      "createdAt": 1794424455360,
+      "probe": true,
+      "cycle": 234,
+      "predictedRul": 47.1,
+      "actualRul": 38,
+      "health": "watch"
+    }
+  ],
+  "incident": {
+    "id": "c4a82e94-562a-436b-870b-3d81f8274459",
+    "kind": "model_unavailable",
+    "status": "recovered",
+    "openedAt": 1794424453516,
+    "configRevision": 1,
+    "steps": [
+      {
+        "at": 1794424453516,
+        "phase": "Fault",
+        "tool": "inject_workspace_fault",
+        "outcome": "applied",
+        "detail": "A controlled fault affects this workspace only. Existing assessments are unchanged."
+      },
+      {
+        "at": 1794424454303,
+        "phase": "Alert",
+        "tool": "evaluate_operator_impact",
+        "outcome": "triggered",
+        "detail": "Three consecutive unavailable RUL assessments. Validation errors are excluded."
+      },
+      {
+        "at": 1794424454304,
+        "phase": "Observe",
+        "tool": "read_pipeline_state",
+        "outcome": "complete",
+        "detail": "Read pipeline configuration and the three-attempt operator-impact alert. No sensor data is sent to reasoning."
+      },
+      {
+        "at": 1794424455359,
+        "phase": "Diagnose",
+        "tool": "select_allowlisted_repair",
+        "outcome": "restore_model",
+        "detail": "Reasoner: model-advised (vLLM mlx-community/Qwen2.5-7B-Instruct-4bit proposed restore_model; policy selected restore_model). The repair must agree with observed state and cannot change assessments or model weights."
+      },
+      {
+        "at": 1794424455359,
+        "phase": "Repair",
+        "tool": "restore_model",
+        "outcome": "applied",
+        "detail": "Pointed the model registry back to the validated rul-fd001-v2 using a revision-checked update."
+      },
+      {
+        "at": 1794424455365,
+        "phase": "Verify",
+        "tool": "exercise_assessment_api",
+        "outcome": "passed",
+        "detail": "Golden-engine probe HTTP 201; invalid-engine probe HTTP 422; durable probe assessment confirmed; prediction error 9.1 cycles (tolerance 15)."
+      }
+    ],
+    "alertedAt": 1794424454303,
+    "traceId": "d5e83060aa6c4f66b39985a73047f747",
+    "runId": "8fafb3c3-7159-4de5-8adf-99078fd8402d",
+    "verification": {
+      "positive": 201,
+      "negative": 422,
+      "persisted": true,
+      "absoluteError": 9.1,
+      "accurate": true
+    },
+    "completedAt": 1794424455365
+  },
+  "history": [],
+  "traces": [
+    {
+      "traceId": "38ecf6503e6c494c8d16154acc7c75a8",
+      "spanId": "a66a1381ee0247b6",
+      "at": 1794424453067,
+      "durationMs": 2,
+      "span": "rul.assessment",
+      "status": 201,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "assessment_recorded"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "operator_assessment",
+        "outcome": "success"
+      }
+    },
+    {
+      "traceId": "354a2fefa98e4ce9b61565c7af88881b",
+      "spanId": "f1979962a23f429f",
+      "at": 1794424453249,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 201,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "assessment_recorded"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "operator_assessment",
+        "outcome": "success"
+      }
+    },
+    {
+      "traceId": "b076f33ed5ab4074a8f29f98dc6c1b97",
+      "spanId": "63a83cd2fc66435c",
+      "at": 1794424453365,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 201,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "assessment_recorded"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "operator_assessment",
+        "outcome": "success"
+      }
+    },
+    {
+      "traceId": "db2f48a3bc524aa698c45515a03d2c67",
+      "spanId": "917e308795654b86",
+      "at": 1794424453786,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 503,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "model_unavailable"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "unavailable"
+      }
+    },
+    {
+      "traceId": "7af53a6846974f7899e5a6e17cfbde9f",
+      "spanId": "e0a9143006554af9",
+      "at": 1794424454045,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 503,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "model_unavailable"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "unavailable"
+      }
+    },
+    {
+      "traceId": "d5e83060aa6c4f66b39985a73047f747",
+      "spanId": "7bcfa98fa0204b5b",
+      "at": 1794424454303,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 503,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "model_unavailable"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "unavailable"
+      }
+    },
+    {
+      "traceId": "af10e69c1fdd433887112689f0f92530",
+      "spanId": "ee3c2eac4acd4e7d",
+      "at": 1794424455362,
+      "durationMs": 2,
+      "span": "rul.assessment",
+      "status": 201,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "assessment_recorded"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "synthetic_probe",
+        "outcome": "success"
+      }
+    },
+    {
+      "traceId": "c75d6d6d4c7c4673858b4b8302f773cf",
+      "spanId": "35d9e5b075e24b5b",
+      "at": 1794424455364,
+      "durationMs": 1,
+      "span": "rul.assessment",
+      "status": 422,
+      "log": {
+        "event": "assessment.completed",
+        "component": "rul-service",
+        "outcome": "invalid_engine"
+      },
+      "metric": {
+        "name": "rul_assessment_journey_total",
+        "value": 1,
+        "journey": "operator_assessment",
+        "outcome": "rejected"
+      }
+    }
+  ],
+  "failureStreak": 0,
+  "metrics": {
+    "operatorGood": 3,
+    "operatorBad": 0,
+    "probeGood": 1,
+    "probeBad": 3,
+    "rejected": 1,
+    "recoveries": 1
+  },
+  "serviceAvailable": true,
+  "model": {
+    "id": "rul-fd001-v2",
+    "dataset": "NASA C-MAPSS FD001 (one operating condition, HPC degradation)",
+    "algorithm": "Ridge regression (lambda 1) on full 30-cycle window means and slopes of 14 sensors plus cycle count",
+    "sensors": [
+      "s2",
+      "s3",
+      "s4",
+      "s7",
+      "s8",
+      "s9",
+      "s11",
+      "s12",
+      "s13",
+      "s14",
+      "s15",
+      "s17",
+      "s20",
+      "s21"
+    ],
+    "window": 30,
+    "rulCap": 125,
+    "evaluation": {
+      "split": "FD001 test set, last recorded cycle of each of the 100 units vs RUL_FD001",
+      "units": 100,
+      "rmse": 16.6,
+      "rmseAgainstCappedTruth": 15.22,
+      "mae": 13.52,
+      "phmScore": 417.4
+    },
+    "thresholds": {
+      "criticalRul": 30,
+      "watchRul": 80
+    },
+    "verification": {
+      "referenceEngine": "Golden reference (FD001 test unit 91)",
+      "actualRul": 38,
+      "toleranceCycles": 15
+    }
+  }
+}

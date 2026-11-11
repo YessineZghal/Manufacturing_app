@@ -1,0 +1,17 @@
+node_modules
+.git
+.npm-cache
+.wrangler
+.vinext
+.next
+dist
+outputs
+test-results
+playwright-report
+data
+*.tsbuildinfo
+.env*
+.dev.vars*
+docs/screenshots
+evidence/*.webm
+dataset
